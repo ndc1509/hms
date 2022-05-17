@@ -1,15 +1,9 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { useCountdown } from "../../hooks/useCountdown";
-import { waitForCheckOut } from "../../store/reducers/roomsSlice";
 
-const Timer = ({ targetDate, guestId }) => {
+const Timer = ({ on = false, targetDate }) => {
     const date = Date.parse(targetDate);
     const timer = useCountdown(date);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        if (timer === "CHECK OUT") dispatch(waitForCheckOut(guestId));
-    }, [timer]);
 
     return (
         <div
@@ -22,7 +16,7 @@ const Timer = ({ targetDate, guestId }) => {
                 backgroundColor: "purple",
             }}
         >
-            {timer}
+            {on ? timer : "CHECK-OUT"}
         </div>
     );
 };

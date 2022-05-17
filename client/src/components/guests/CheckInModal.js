@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit";
 import React, { useState } from "react";
 import {
     Form,
@@ -11,19 +10,19 @@ import {
     ModalTitle,
     Button,
     Modal,
+    Badge,
 } from "react-bootstrap";
 import NumberFormat from "react-number-format";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { checkIn } from "../../api/api";
 import { addHours, dateDistance } from "../../helpers";
-import { checkIn, roomsSelector } from "../../store/reducers/roomsSlice";
 
 const guestInitState = {
     name: "",
     idCard: "",
-    total: 0,
-    checkOutDate: "",
-    checkInDateTime: "",
-    checkOutDateTime: "",
+    total: "",
+    expectedCheckOutDate: "",
+    checkInDate: "",
     note: "",
 };
 
@@ -41,14 +40,18 @@ const CheckInModal = ({ show, onHide, selectedRooms }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const id = nanoid();
-        const checkOutDate =
-            guest.checkOutDate !== ""
-                ? addHours(new Date(guest.checkOutDate), 5).toISOString()
+
+        const expectedCheckOutDate =
+            guest.expectedCheckOutDate !== ""
+                ? addHours(
+                      new Date(guest.expectedCheckOutDate),
+                      5
+                  ).toISOString()
                 : addHours(new Date(Date.parse(nowDate())), 5).toISOString();
 
-        const checkInDateTime = new Date(Date.now()).toISOString();
-        const newGuest = { ...guest, id, checkInDateTime, checkOutDate };
+        const checkInDate = new Date(Date.now()).toISOString();
+        const rooms = selectedRooms.map((room) => room.id);
+        const newGuest = { ...guest, checkInDate, expectedCheckOutDate, rooms };
         dispatch(checkIn(newGuest));
         setGuest(guestInitState);
         onHide();
@@ -70,7 +73,14 @@ const CheckInModal = ({ show, onHide, selectedRooms }) => {
                     id="checkInForm"
                     autoComplete="off"
                 >
-                    <h5>Phòng {selectedRooms.map((room) => room.id + "  ")}</h5>
+                    <h5>
+                        Phòng{" "}
+                        {selectedRooms.map((room) => (
+                            <span key={room.id}>
+                                <Badge bg="success">{room.id}</Badge>{" "}
+                            </span>
+                        ))}
+                    </h5>
                     <FormGroup>
                         <FormLabel>Tên khách: </FormLabel>
                         <FormControl
@@ -97,11 +107,11 @@ const CheckInModal = ({ show, onHide, selectedRooms }) => {
                         <FormLabel>Ngày đi:</FormLabel>
                         <FormControl
                             type="date"
-                            name="checkOutDate"
+                            name="expectedCheckOutDate"
                             min={nowDate()}
                             value={
-                                guest.checkOutDate !== ""
-                                    ? guest.checkOutDate
+                                guest.expectedCheckOutDate !== ""
+                                    ? guest.expectedCheckOutDate.split("T")[0]
                                     : nowDate()
                             }
                             onChange={handleChange}
@@ -111,11 +121,11 @@ const CheckInModal = ({ show, onHide, selectedRooms }) => {
                     <FormGroup>
                         <FormLabel>
                             Tổng thu: {selectedRooms.length} phòng x{" "}
-                            {guest.checkOutDate === ""
+                            {guest.expectedCheckOutDate === ""
                                 ? 0
                                 : dateDistance(
                                       nowDate(),
-                                      guest.checkOutDate
+                                      guest.expectedCheckOutDate.split("T")[0]
                                   )}{" "}
                             đêm
                         </FormLabel>

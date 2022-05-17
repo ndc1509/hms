@@ -1,24 +1,24 @@
 import React from "react";
+import { Badge } from "react-bootstrap";
 
 const Helper = () => {
     return (
         <div className="float-end">
-            <div className="d-inline-block" style={{ backgroundColor: "green", width: "80px",textAlign:'center',color:'white' }}>
-            Trống
-            </div>
-            
+            <Badge bg="" style={{ backgroundColor: "green", color: "white" }}>
+                Trống
+            </Badge>
             &nbsp;
-            <div className="d-inline-block" style={{ backgroundColor: "red", width: "80px",textAlign:'center',color:'white' }}>
+            <Badge bg="" style={{ backgroundColor: "red", color: "white" }}>
                 Có khách
-            </div>
+            </Badge>
             &nbsp;
-            <div className="d-inline-block" style={{ backgroundColor: "black", width: "80px",textAlign:'center',color:'white' }}>
+            <Badge bg="" style={{ backgroundColor: "black", color: "white" }}>
                 Hết hạn
-            </div>
+            </Badge>
             &nbsp;
-            <div className="d-inline-block" style={{ backgroundColor: "yellow", width: "80px",textAlign:'center',color:'black' }}>
+            <Badge bg="" style={{ backgroundColor: "yellow", color: "black" }}>
                 Chưa dọn
-            </div>
+            </Badge>
         </div>
     );
 };

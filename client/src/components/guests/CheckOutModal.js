@@ -9,24 +9,22 @@ import {
     ModalTitle,
     ModalFooter,
     Button,
+    Badge,
 } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { dateForrmatter, dateDistance } from "../../helpers";
-import { checkOut, roomsSelector } from "../../store/reducers/roomsSlice";
+import { useDispatch } from "react-redux";
+import { checkOut } from "../../api/api";
+import { dateFormatter, dateDistance } from "../../helpers";
 
 const CheckOutModal = ({ show, onHide, guest }) => {
-    const dispatch = useDispatch()
-    const rooms = useSelector(roomsSelector);
-    const checkOutRooms = rooms.filter(
-        (room) => room.guest !== null && room.guest.id === guest.id
-    );
+    const dispatch = useDispatch();
+    const checkOutRooms = guest.rooms;
 
     const handleCheckOut = (guest) => {
-        if(window.confirm('Xác nhận khách check-out!')){
-            dispatch(checkOut(guest))
-            onHide()
+        if (window.confirm("Xác nhận khách check-out!")) {
+            dispatch(checkOut(guest));
+            onHide();
         }
-    }
+    };
 
     return (
         <Modal show={show} onHide={onHide}>
@@ -35,7 +33,14 @@ const CheckOutModal = ({ show, onHide, guest }) => {
             </ModalHeader>
             <ModalBody>
                 <Form>
-                    <h5>Phòng {checkOutRooms.map((room) => room.id + " ")}</h5>
+                    <h5>
+                        Phòng{" "}
+                        {checkOutRooms.map((room) => (
+                            <span key={room.id}>
+                                <Badge bg="danger">{room.id}</Badge>{" "}
+                            </span>
+                        ))}
+                    </h5>
                     <FormGroup>
                         <FormLabel>Tên khách: {guest.name}</FormLabel>
                     </FormGroup>
@@ -44,13 +49,13 @@ const CheckOutModal = ({ show, onHide, guest }) => {
                     </FormGroup>
                     <FormGroup>
                         <FormLabel>
-                            Ngày đến: {dateForrmatter(guest.checkInDateTime)}
+                            Ngày đến: {dateFormatter(guest.checkInDate)}
                         </FormLabel>
                     </FormGroup>
                     <FormGroup>
                         <FormLabel>
                             Ngày đi (dự kiến):{" "}
-                            {dateForrmatter(guest.checkOutDate)}
+                            {dateFormatter(guest.expectedCheckOutDate)}
                         </FormLabel>
                     </FormGroup>
                     <FormGroup>
@@ -60,16 +65,14 @@ const CheckOutModal = ({ show, onHide, guest }) => {
                                 checkOutRooms.length +
                                 " phòng x " +
                                 dateDistance(
-                                    guest.checkInDateTime,
-                                    guest.checkOutDate
+                                    guest.checkInDate,
+                                    guest.expectedCheckOutDate
                                 ) +
                                 " đêm)"}
                         </FormLabel>
                     </FormGroup>
                     <FormGroup>
-                        <FormLabel>
-                            Ghi chú: {guest.note}
-                        </FormLabel>
+                        <FormLabel>Ghi chú: {guest.note}</FormLabel>
                     </FormGroup>
                 </Form>
             </ModalBody>

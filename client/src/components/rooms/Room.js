@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import {
-    ROOM_STATUS,
-    selectRoom,
-    cleanRoom,
-} from "../../store/reducers/roomsSlice";
+import { selectRoom } from "../../store/reducers/roomsSlice";
 import CheckOutModal from "../guests/CheckOutModal";
 import Timer from "./Timer";
 import { GiBroom } from "react-icons/gi";
@@ -14,11 +10,10 @@ import {
     AiOutlineCheckCircle,
     AiOutlineAlert,
 } from "react-icons/ai";
-
-const Room = ({ room }) => {
+import { ROOM_STATUS } from "../../constants";
+import { cleaned } from "../../api/api";
+const Room = ({ room, guest = null }) => {
     const dispatch = useDispatch();
-
-    const guest = room.guest;
 
     const [checkOutModalShow, setCheckOutModalShow] = useState(false);
     const handleClose = () => setCheckOutModalShow(false);
@@ -38,7 +33,7 @@ const Room = ({ room }) => {
         } else if (room.status === ROOM_STATUS.CLEAN) {
             console.log("clean");
             if (window.confirm("Đánh dấu phòng đã được dọn sạch?"))
-                dispatch(cleanRoom(room.id));
+                dispatch(cleaned(room));
         }
     };
 
@@ -104,8 +99,12 @@ const Room = ({ room }) => {
                 {guest !== null && (
                     <>
                         <Timer
-                            guestId={guest.id}
-                            targetDate={guest.checkOutDate}
+                            on={
+                                room.status !== ROOM_STATUS.CHECK_OUT
+                                    ? true
+                                    : false
+                            }
+                            targetDate={guest.expectedCheckOutDate}
                         />
                         <p>{guest.name}</p>
                     </>

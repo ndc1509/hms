@@ -19,7 +19,7 @@ const useCountdown = (targetDate) => {
 };
 
 const getReturnValues = (countDown) => {
-    if (countDown < 0) return "CHECK OUT";
+    if (countDown < 0) return "0h:0m:0s";
     // calculate time left
     const days = Math.floor(countDown / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
