@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { ROOM_STATUS } from "../constants";
 
-const host = 'https://cannonfort.vercel.app'
+const host = 'https://cannonfort.herokuapp.com'
 export const getRooms = createAsyncThunk("getRooms", async () => {
     const res = await axios.get(`${host}/api/rooms`);
     return res.data.rooms;
