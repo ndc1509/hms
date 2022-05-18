@@ -9,7 +9,9 @@ function App() {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        const socket = socketIOClient.connect(host);
+        const socket = socketIOClient(host, {
+            transports: ['websocket', 'polling', 'flashsocket'],
+        });
         socket.on("wait for checkout", (data) => {
             console.log(data);
             dispatch(waitForCheckOut(data));
