@@ -5,7 +5,7 @@ import FloorPlan from "./components/rooms/FloorPlan";
 import socketIOClient from "socket.io-client";
 import { waitForCheckOut } from "./store/reducers/roomsSlice";
 function App() {
-    const host = "https://cannonfort.vercel.app:5000";
+    const host = "https://cannonfort.vercel.app";
 
     const dispatch = useDispatch();
     useEffect(() => {
