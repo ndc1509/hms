@@ -3,6 +3,7 @@ import { ROOM_STATUS } from "../../constants";
 import { getRooms, checkIn, checkOut, cleaned } from "../../api/api";
 const initialState = {
     allRooms: [],
+    ready: false
 };
 
 const roomsSlice = createSlice({

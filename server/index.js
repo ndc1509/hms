@@ -3,6 +3,13 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const roomRouter = require("./routes/room");
 const guestRouter = require("./routes/guest");
+const authRouter = require("./routes/auth");
+
+const http = require("http");
+const { Server } = require("socket.io");
+const checkOutSchedule = require("./lib/scheduler");
+const cookieParser = require("cookie-parser");
+
 const connectDB = async () => {
     try {
         await mongoose.connect(
@@ -18,16 +25,15 @@ const connectDB = async () => {
 connectDB();
 
 const app = express();
-const http = require("http");
-const { Server } = require("socket.io");
-const checkOutSchedule = require("./lib/scheduler");
 
+app.use(cookieParser())
 app.use(cors());
 app.use(express.json());
 
 //Routes
 app.use("/api/rooms", roomRouter);
 app.use("/api/guests", guestRouter);
+app.use("/api/auth", authRouter);
 app.use("*", (request, response) => {
     return response.status(404).json({
         success: false,

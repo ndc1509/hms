@@ -1,0 +1,58 @@
+html,
+body,
+#root,
+.App {
+    height: 100%;
+}
+
+#login {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login #login-card {
+    vertical-align: middle;
+}
+
+#login .card-header {
+    font-weight: bold;
+    text-align: center;
+    background-color: darkorange !important;
+    color: white;
+    padding: 20px 0px 20px 0px !important;
+}
+
+#login form {
+    margin: 10px;
+}
+
+#login input {
+    width: 250px !important;
+}
+
+#login .input-group-text {
+    background-color: darkorange !important;
+    color: white !important;
+}
+
+#login .login-form {
+    margin-bottom: 10px;
+}
+
+#login button {
+    margin-top: 10px !important;
+    background-color: darkorange !important;
+    color: white !important;
+    width: 100%;
+}
+
+#login .alert {
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+    width: 291px;
+    margin-bottom: 10px !important;
+    padding: 0px 15px !important;
+}

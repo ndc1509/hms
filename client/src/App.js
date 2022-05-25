@@ -1,29 +1,13 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import FloorPlan from "./components/rooms/FloorPlan";
-import socketIOClient from "socket.io-client";
-import { waitForCheckOut } from "./store/reducers/roomsSlice";
+import HomeRoute from "./routes/HomeRoute";
+import LoginRoute from "./routes/LoginRoute";
 function App() {
-    const host = "https://cannonfort.vercel.app";
-
-    const dispatch = useDispatch();
-    useEffect(() => {
-        const socket = socketIOClient.connect(host);
-        socket.on("wait for checkout", (data) => {
-            console.log(data);
-            dispatch(waitForCheckOut(data));
-        });
-        return () => {
-            console.log("disconnect");
-            socket.disconnect();
-        };
-    }, []);
-
     return (
-        <div className="App">
-            <FloorPlan />
-        </div>
+        <Routes>
+            <Route path="/" element={<LoginRoute/>}/>
+            <Route path="/home" element={<HomeRoute/>}/>
+        </Routes>
     );
 }
 

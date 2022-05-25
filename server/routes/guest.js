@@ -82,4 +82,20 @@ router.get("/", async (request, response) => {
     }
 });
 
+router.get("/history", async (request, response) => {
+    try {
+        const allGuests = await Guest.find().populate("rooms");
+        response.json({
+            success: true,
+            message: "Guest history",
+            guests: allGuests,
+        });
+    } catch (error) {
+        console.log(error);
+        response
+            .status(500)
+            .json({ success: false, message: "Internal Server Error" });
+    }
+});
+
 module.exports = router;

@@ -5,7 +5,7 @@ const { ROOM_STATUS } = require("./constants");
 
 const checkOutSchedule = (socket) =>
     new CronJob(
-        "0 0 0 * * *",
+        "0 0 12 * * *",
         async (fireDate) => {
             const curGuests = await Guest.find({
                 checkOutDate: { $exists: false },
