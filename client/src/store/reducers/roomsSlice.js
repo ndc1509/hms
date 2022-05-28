@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { checkIn, checkOut, cleaned, getRooms } from "../../api/api";
 import { ROOM_STATUS } from "../../constants";
-import { getRooms, checkIn, checkOut, cleaned } from "../../api/api";
 const initialState = {
     allRooms: [],
-    ready: false
+    ready: false,
 };
 
 const roomsSlice = createSlice({

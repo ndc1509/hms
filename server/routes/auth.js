@@ -7,6 +7,7 @@ const {
     verifyToken,
     verifyRefreshToken,
 } = require("../middlewares/auth.middleware");
+const { AUTH_ACTION } = require("../lib/constants");
 require("dotenv").config();
 
 //REGISTER
@@ -20,18 +21,26 @@ router.post("/register", async (req, res) => {
             .json({ success: false, message: "Missing username/password" });
     try {
         //Check user exist
-        const user = await User.findOne({ username });
-        if (user)
+        const existedUser = await User.findOne({ username });
+        if (existedUser)
             return res
                 .status(400)
                 .json({ success: false, message: "Username already taken" });
+        //Hash password and save user
         const hashedPassword = await argon2.hash(password);
         const newUser = new User({ username, password: hashedPassword });
         await newUser.save();
-        //Return token
-        const tokens = generateTokens();
-        updateToken(newUser._id, tokens.accessToken, tokens.refreshToken);
-        return res
+        //Gen and save tokens
+        const tokens = generateTokens({
+            userId: newUser._id,
+            username: newUser.username,
+        });
+        updateToken(AUTH_ACTION.REGISTER, {
+            user: newUser,
+            ...tokens,
+        });
+        //Response
+        res.status(201)
             .cookie("refreshToken", tokens.refreshToken, {
                 httpOnly: true,
                 sameSite: "none",
@@ -41,7 +50,7 @@ router.post("/register", async (req, res) => {
             .json({
                 success: true,
                 message: "User created successfully",
-                tokens,
+                accessToken: tokens.accessToken,
             });
     } catch (error) {
         console.log(error);
@@ -57,39 +66,47 @@ router.post("/login", async (req, res) => {
     const { username, password } = req.body;
     //Validate
     if (!username || !password)
-        return res.status(400).json({
-            success: false,
-            message: "Username và password không được để trống",
-        });
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "Username và password không được để trống",
+            });
     try {
         //Check user
         const user = await User.findOne({ username });
         if (!user)
-            return res.status(400).json({
-                success: false,
-                message: `Tài khoản không tồn tại`,
-            });
-        // Username found
+            return res
+                .status(400)
+                .json({ success: false, message: "Tài khoản không tồn tại" });
+        // Username found then check password
         const passwordValid = await argon2.verify(user.password, password);
         if (!passwordValid)
             return res
                 .status(400)
                 .json({ success: false, message: "Sai mật khẩu" });
-        //Success
-        const tokens = generateTokens(user._id);
-        updateToken(user._id, tokens.accessToken, tokens.refreshToken);
-
-        res.cookie("refreshToken", tokens.refreshToken, {
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-            maxAge: 24 * 60 * 60 * 1000,
-        }).json({
-            success: true,
-            message: "Đăng nhập thành công",
-            user: user.username,
-            accessToken: tokens.accessToken,
+        //Gen and save tokens
+        const tokens = generateTokens({
+            userId: user._id,
+            username: user.username,
         });
+        updateToken(AUTH_ACTION.LOGIN, {
+            user,
+            ...tokens,
+        });
+        //Response
+        res.status(200)
+            .cookie("refreshToken", tokens.refreshToken, {
+                httpOnly: true,
+                sameSite: "none",
+                secure: true,
+                maxAge: 24 * 60 * 60 * 1000,
+            })
+            .json({
+                success: true,
+                message: "Đăng nhập thành công",
+                accessToken: tokens.accessToken,
+            });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -102,18 +119,21 @@ router.post("/login", async (req, res) => {
 //REFRESH TOKEN
 router.post("/token", verifyRefreshToken, async (req, res) => {
     try {
-        const tokens = generateTokens(req.userId);
-        updateToken(req.userId, tokens.accessToken, tokens.refreshToken);
-
-        res.cookie("refreshToken", tokens.refreshToken, {
-            httpOnly: true,
-            sameSite: "none",
-            secure: true,
-            maxAge: 24 * 60 * 60 * 1000,
-        }).json({
+        const user = req.user;
+        //Gen and save access token only
+        const tokens = generateTokens({
+            userId: user._id,
+            username: user.username,
+        });
+        updateToken(AUTH_ACTION.REFRESH_TOKEN, {
+            user,
+            ...tokens,
+        });
+        console.log("token refreshed" + tokens.accessToken);
+        //Response
+        res.status(200).json({
             success: true,
             message: "Tokens refreshed",
-            user: req.username,
             accessToken: tokens.accessToken,
         });
     } catch (error) {
@@ -127,41 +147,46 @@ router.post("/token", verifyRefreshToken, async (req, res) => {
 
 //LOGOUT
 router.delete("/logout", verifyToken, async (req, res) => {
-    updateToken(req.userId, null, null);
+    const user = req.user;
+    updateToken(AUTH_ACTION.LOGOUT, {
+        user,
+        accessToken: null,
+        refreshToken: null,
+    });
     res.status(204).json({ success: true, message: "User logged out" });
 });
 
-const generateTokens = (userId) => {
-    const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "2h",
-    });
+const generateTokens = (payload) => {
+    const { userId, username } = payload;
+    const accessToken = jwt.sign(
+        { userId, username },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: "100s",
+        }
+    );
 
     const refreshToken = jwt.sign(
-        { userId },
+        { userId, username },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: "24h" }
     );
     return { accessToken, refreshToken };
 };
 
-const updateToken = async (userId, accessToken, refreshToken) => {
+const updateToken = async (action, payload) => {
+    const { user, accessToken, refreshToken } = payload;
     try {
-        //Get user
-        const user = await User.findOneAndUpdate(
-            { _id: userId },
-            { accessToken, refreshToken },
-            { new: true }
-        );
-        if (!user)
-            return res
-                .status(401)
-                .json({ success: false, message: "User not exist" });
+        if (action === AUTH_ACTION.REFRESH_TOKEN) {
+            await User.findOneAndUpdate({ _id: user.id }, { accessToken });
+        } else {
+            await User.findOneAndUpdate(
+                { _id: user.id },
+                { accessToken, refreshToken }
+            );
+        }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            success: false,
-            message: "Internal server error",
-        });
+        throw error;
     }
 };
 

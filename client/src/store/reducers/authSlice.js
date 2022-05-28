@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login } from "../../api/api";
+import { login, logout } from "../../api/api";
 
 const initState = {
     authLoading: true,
@@ -16,22 +16,31 @@ const authSlice = createSlice({
         [login.fulfilled]: (state, action) => {
             const data = action.payload;
             const isSuccess = data.success;
-            if (isSuccess)
+            const user = JSON.parse(localStorage.getItem("USER"))
+            if (isSuccess && user)
                 return {
                     ...state,
                     authLoading: false,
                     isAuthenticated: true,
-                    user: data.user,
+                    user,
                     errorMsg: null,
-                };
+                }
             else
                 return {
                     ...state,
                     authLoading: true,
                     isAuthenticated: false,
                     errorMsg: data.message,
-                };
+                }
         },
+        [logout.fulfilled]: (state, action) => {
+            return {
+                ...state,
+                authLoading: true,
+                isAuthenticated: false,
+                user: null
+            }
+        }
     },
 });
 

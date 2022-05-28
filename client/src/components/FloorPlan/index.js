@@ -2,12 +2,10 @@ import React, { useLayoutEffect, useState } from "react";
 import { Button, Container, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getGuests, getRooms } from "../../api/api";
-import { useSocket } from "../../hooks/useSocket";
 import { guestsStatus } from "../../store/reducers/guestsSlice";
 import { roomsSelector, roomsStatus } from "../../store/reducers/roomsSlice";
-import CheckInModal from "../guests/CheckInModal";
-import Sidebar from "../layouts/Sidebar";
-import Floor from "./Floor";
+import Floor from "../Floor";
+import CheckInModal from "../Guest/CheckInModal";
 import Helper from "./Helper";
 
 const FloorPlan = () => {
@@ -30,29 +28,24 @@ const FloorPlan = () => {
         dispatch(getGuests());
     }, []);
 
-    const socket = useSocket();
-
     if (isRoomsReady && isGuestsReady)
         return (
-            <div className="d-flex">
-                <Sidebar />
-                <Container className="mt-2">
-                    <Container>
-                        {floorIds.map((floorId, idx) => (
-                            <Floor floorId={floorId} key={idx} />
-                        ))}
-                    </Container>
-                    <Container className="my-3">
-                        <Button onClick={handleShow}>Thêm khách</Button>
-                        <Helper className="" />
-                    </Container>
-                    <CheckInModal
-                        show={checkInModalShow}
-                        onHide={handleClose}
-                        selectedRooms={selectedRooms}
-                    />
+            <Container className="mt-2">
+                <Container>
+                    {floorIds.map((floorId, idx) => (
+                        <Floor floorId={floorId} key={idx} />
+                    ))}
                 </Container>
-            </div>
+                <Container className="my-3">
+                    <Button onClick={handleShow}>Thêm khách</Button>
+                    <Helper className="" />
+                </Container>
+                <CheckInModal
+                    show={checkInModalShow}
+                    onHide={handleClose}
+                    selectedRooms={selectedRooms}
+                />
+            </Container>
         );
     else
         return (

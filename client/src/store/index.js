@@ -1,15 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import roomsReducer from "./reducers/roomsSlice";
-import guestReducer from "./reducers/guestsSlice";
-import authReducer from "./reducers/authSlice";
 import saveTokenMiddleware from "../middlewares/saveToken.middleware";
+import authReducer from "./reducers/authSlice";
+import guestReducer from "./reducers/guestsSlice";
+import roomsReducer from "./reducers/roomsSlice";
 const store = configureStore({
     reducer: {
         roomsReducer,
         guestReducer,
-        authReducer
+        authReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saveTokenMiddleware)
-})
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(saveTokenMiddleware),
+});
 
-export default store
+export default store;

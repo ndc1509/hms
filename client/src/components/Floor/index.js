@@ -3,7 +3,7 @@ import { Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { guestsSelector } from "../../store/reducers/guestsSlice";
 import { roomsSelector } from "../../store/reducers/roomsSlice";
-import Room from "./Room";
+import Room from "../Room";
 
 function Floor({ floorId, roomCount = 4 }) {
     const rooms = useSelector(roomsSelector);

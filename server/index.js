@@ -9,6 +9,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const checkOutSchedule = require("./lib/scheduler");
 const cookieParser = require("cookie-parser");
+const { verifyToken } = require("./middlewares/auth.middleware");
 
 const connectDB = async () => {
     try {
@@ -27,12 +28,15 @@ connectDB();
 const app = express();
 
 app.use(cookieParser())
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 app.use(express.json());
 
 //Routes
-app.use("/api/rooms", roomRouter);
-app.use("/api/guests", guestRouter);
+app.use("/api/rooms",verifyToken ,roomRouter);
+app.use("/api/guests",verifyToken, guestRouter);
 app.use("/api/auth", authRouter);
 app.use("*", (request, response) => {
     return response.status(404).json({
@@ -45,7 +49,7 @@ const server = http.createServer(app);
 
 //Socket.io
 const io = new Server(server, {cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
 }});
 

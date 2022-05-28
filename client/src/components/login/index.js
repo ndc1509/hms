@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/api";
 import { authSelector } from "../../store/reducers/authSlice";
-import "./login.css";
+import "./Login.css";
 const Login = () => {
     const auth = useSelector(authSelector);
     const dispatch = useDispatch();

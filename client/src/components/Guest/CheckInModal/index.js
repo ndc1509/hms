@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import {
+    Badge,
+    Button,
     Form,
     FormControl,
     FormGroup,
     FormLabel,
+    Modal,
     ModalBody,
     ModalFooter,
     ModalHeader,
     ModalTitle,
-    Button,
-    Modal,
-    Badge,
 } from "react-bootstrap";
 import NumberFormat from "react-number-format";
 import { useDispatch } from "react-redux";
-import { checkIn } from "../../api/api";
-import { addHours, dateDistance } from "../../helpers";
+import { checkIn } from "../../../api/api";
+import { addHours, dateDistance } from "../../../lib";
 
 const guestInitState = {
     name: "",

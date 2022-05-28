@@ -1,19 +1,19 @@
 import React from "react";
 import {
+    Badge,
+    Button,
     Form,
     FormGroup,
     FormLabel,
     Modal,
     ModalBody,
-    ModalHeader,
-    ModalTitle,
     ModalFooter,
-    Button,
-    Badge,
+    ModalHeader,
+    ModalTitle
 } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { checkOut } from "../../api/api";
-import { dateFormatter, dateDistance } from "../../helpers";
+import { checkOut } from "../../../api/api";
+import { dateDistance, dateFormatter } from "../../../lib";
 
 const CheckOutModal = ({ show, onHide, guest }) => {
     const dispatch = useDispatch();

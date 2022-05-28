@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Col } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { selectRoom } from "../../store/reducers/roomsSlice";
-import CheckOutModal from "../guests/CheckOutModal";
-import Timer from "./Timer";
-import { GiBroom } from "react-icons/gi";
 import {
-    AiOutlineCloseCircle,
-    AiOutlineCheckCircle,
     AiOutlineAlert,
+    AiOutlineCheckCircle,
+    AiOutlineCloseCircle
 } from "react-icons/ai";
-import { ROOM_STATUS } from "../../constants";
+import { GiBroom } from "react-icons/gi";
+import { useDispatch } from "react-redux";
 import { cleaned } from "../../api/api";
+import { ROOM_STATUS } from "../../constants";
+import { selectRoom } from "../../store/reducers/roomsSlice";
+import CheckOutModal from "../Guest/CheckOutModal";
+import Timer from "./Timer";
 const Room = ({ room, guest = null }) => {
     const dispatch = useDispatch();
 

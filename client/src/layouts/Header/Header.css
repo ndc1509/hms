@@ -1,0 +1,23 @@
+#header {
+    background-color: darkorange !important;
+    height: 56px;
+    z-index: 999;
+}
+
+
+#header .navbar-brand {
+    padding: 0px 30px !important;
+    color: white;
+}
+
+#header .navbar-brand span {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+/* Avatar */
+#avatar {
+    float: right;
+}
+
+
