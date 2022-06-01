@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import { waitForCheckOut } from "../store/reducers/roomsSlice";
 const useSocket = () => {
-    const host = "http://localhost:5000";
+    const host = "https://cannonfort.herokuapp.com";
     const accessToken = localStorage.getItem("ACCESS_TOKEN");
     const dispatch = useDispatch();
     useEffect(() => {
