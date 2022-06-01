@@ -34,7 +34,7 @@ const app = express();
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: "https://cannonfort.netlify.app",
         credentials: true,
     })
 );
@@ -56,7 +56,7 @@ const server = http.createServer(app);
 //Socket.io
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://cannonfort.netlify.app",
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         credentials: true
     },
