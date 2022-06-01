@@ -89,26 +89,33 @@ const Room = ({ room, guest = null }) => {
                     borderRadius: "10px",
                     height: "60px",
                     textAlign: "center",
+                    overflow: "hidden",
                 }}
                 onClick={(event) => handleSelect(event, room)}
             >
-                <div className="position-absolute">{roomIcon(room.status)}</div>
-                <div className="m-0" style={{ fontWeight: "bold" }}>
-                    {room.id}
-                </div>
-                {guest !== null && (
-                    <>
-                        <Timer
-                            on={
-                                room.status !== ROOM_STATUS.CHECK_OUT
-                                    ? true
-                                    : false
-                            }
-                            targetDate={guest.expectedCheckOutDate}
-                        />
-                        <p>{guest.name}</p>
-                    </>
-                )}
+                <span>
+                    <span className="position-absolute" style={{ left: "8px" }}>
+                        {roomIcon(room.status)}
+                    </span>
+                    <span
+                        style={{ fontWeight: "bold", verticalAlign: "middle" }}
+                    >
+                        {room.id}
+                    </span>
+                    {guest !== null && (
+                        <>
+                            <Timer
+                                on={
+                                    room.status !== ROOM_STATUS.CHECK_OUT
+                                        ? true
+                                        : false
+                                }
+                                targetDate={guest.expectedCheckOutDate}
+                            />
+                            <p>{guest.name}</p>
+                        </>
+                    )}
+                </span>
             </Col>
             {guest !== null && (
                 <CheckOutModal

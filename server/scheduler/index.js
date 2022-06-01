@@ -1,7 +1,7 @@
 const CronJob = require("cron").CronJob;
 const Guest = require("../models/Guest");
 const Room = require("../models/Room");
-const { ROOM_STATUS } = require("./constants");
+const { ROOM_STATUS } = require("../constants");
 
 const checkOutSchedule = (socket) =>
     new CronJob(

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ROOM_STATUS } from "../constants";
+import axiosBase from "./axiosBase";
 import axiosClient from "./axiosClient";
 
 export const getRooms = createAsyncThunk("getRooms", async () => {
@@ -32,16 +33,25 @@ export const getGuests = createAsyncThunk("getGuests", async () => {
     return data.guests;
 });
 
-export const login = createAsyncThunk("login", async (loginInfo) => {
-    try {
-        const data = await axiosClient.post(`/auth/login`, loginInfo);
-        return data;
-    } catch (error) {
-        return error.response.data;
+export const login = createAsyncThunk(
+    "login",
+    async (loginInfo, { rejectWithValue }) => {
+        try {
+            const data = await axiosBase.post(`/auth/login`, loginInfo);
+            return data;
+        } catch (error) {
+            console.log(error);
+            return rejectWithValue(error.response.data);
+        }
     }
-});
+);
 
 export const logout = createAsyncThunk("logout", async () => {
     await axiosClient.delete("/auth/logout");
     return;
+});
+
+export const reauthorize = createAsyncThunk("reauthorize", async () => {
+    const data = await axiosBase.post("/auth/token");
+    return data;
 });

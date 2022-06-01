@@ -1,0 +1,19 @@
+#helper #empty {
+    background-color: green !important;
+    color: white !important;
+}
+
+#helper #inuse {
+    background-color: red !important;
+    color: white !important;
+}
+
+#helper #checkout {
+    background-color: black !important;
+    color: white !important;
+}
+
+#helper #uncleaned {
+    background-color: yellow !important;
+    color: black !important;
+}

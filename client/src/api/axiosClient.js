@@ -1,11 +1,14 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import queryString from "query-string";
+import axiosBase from "./axiosBase";
 const axiosClient = axios.create({
     baseURL: "http://localhost:5000/api",
     headers: {
         "Content-type": "application/json",
     },
-    withCredentials: true
+    withCredentials: true,
+    paramsSerializer: (params) => queryString.stringify(params),
 });
 
 axiosClient.interceptors.request.use(async (config) => {
@@ -15,10 +18,7 @@ axiosClient.interceptors.request.use(async (config) => {
         const tokenPayload = jwt_decode(accessToken);
         const now = new Date();
         if (now.getTime() / 1000 >= tokenPayload.exp) {
-            localStorage.removeItem("ACCESS_TOKEN")
-            const data = await axiosClient.post(
-                "http://localhost:5000/api/auth/token"
-            );
+            const data = await axiosBase.post("/auth/token");
             accessToken = data.accessToken;
             localStorage.setItem("ACCESS_TOKEN", accessToken);
         }
@@ -26,7 +26,7 @@ axiosClient.interceptors.request.use(async (config) => {
     } catch (error) {
         console.log(error);
     }
-    return config
+    return config;
 });
 
 axiosClient.interceptors.response.use(
@@ -37,7 +37,7 @@ axiosClient.interceptors.response.use(
         return res;
     },
     (error) => {
-        throw error
+        throw error;
     }
 );
 

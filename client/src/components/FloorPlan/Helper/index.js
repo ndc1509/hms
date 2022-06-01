@@ -1,24 +1,17 @@
 import React from "react";
 import { Badge } from "react-bootstrap";
+import "./Helper.css";
 
 const Helper = () => {
     return (
-        <div className="float-end">
-            <Badge bg="" style={{ backgroundColor: "green", color: "white" }}>
-                Trống
-            </Badge>
+        <div className="float-end" id="helper">
+            <Badge id="empty">Trống</Badge>
             &nbsp;
-            <Badge bg="" style={{ backgroundColor: "red", color: "white" }}>
-                Có khách
-            </Badge>
+            <Badge id="inuse">Có khách</Badge>
             &nbsp;
-            <Badge bg="" style={{ backgroundColor: "black", color: "white" }}>
-                Hết hạn
-            </Badge>
+            <Badge id="checkout">Hết hạn</Badge>
             &nbsp;
-            <Badge bg="" style={{ backgroundColor: "yellow", color: "black" }}>
-                Chưa dọn
-            </Badge>
+            <Badge id="uncleaned">Chưa dọn</Badge>
         </div>
     );
 };

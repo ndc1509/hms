@@ -30,15 +30,15 @@ const FloorPlan = () => {
 
     if (isRoomsReady && isGuestsReady)
         return (
-            <Container className="mt-2">
+            <Container className="pt-3">
                 <Container>
                     {floorIds.map((floorId, idx) => (
                         <Floor floorId={floorId} key={idx} />
                     ))}
                 </Container>
-                <Container className="my-3">
+                <Container className="py-3">
                     <Button onClick={handleShow}>Thêm khách</Button>
-                    <Helper className="" />
+                    <Helper />
                 </Container>
                 <CheckInModal
                     show={checkInModalShow}
