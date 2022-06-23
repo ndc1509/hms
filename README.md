@@ -13,6 +13,6 @@ Functionalities:
 - Manage room status
 - Check-in
 - Check-out
-
+- Authenticate with JWT
 In development:
 - Prebooking
